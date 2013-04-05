@@ -102,6 +102,8 @@ SVD_F_DB:  dense binary
 
 /* Creates an empty dense matrix. */
 extern DMat svdNewDMat(int rows, int cols);
+/* Creates a dense matrix from an already existing buffer */
+extern DMat svdNewDMatFromArray(int rows, int cols, double *buf);
 /* Frees a dense matrix. */
 extern void svdFreeDMat(DMat D);
 

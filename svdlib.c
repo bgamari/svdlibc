@@ -46,9 +46,9 @@ void svdResetCounters(void) {
 
 /********************************* Allocation ********************************/
 
-/* Row major order.  Rows are vectors that are consecutive in memory.  Matrix
-   is initialized to empty. */
-DMat svdNewDMat(int rows, int cols) {
+/* Create a DMat from an existing buffer. This is assumed to be of the
+   given size, in double-precision and in row-major order */
+DMat svdNewDMatFromArray(int rows, int cols, double *buf) {
   int i;
   DMat D = (DMat) malloc(sizeof(struct dmat));
   if (!D) {perror("svdNewDMat"); return NULL;}
@@ -58,11 +58,18 @@ DMat svdNewDMat(int rows, int cols) {
   D->value = (double **) malloc(rows * sizeof(double *));
   if (!D->value) {SAFE_FREE(D); return NULL;}
 
-  D->value[0] = (double *) calloc(rows * cols, sizeof(double));
-  if (!D->value[0]) {SAFE_FREE(D->value); SAFE_FREE(D); return NULL;}
-
+  D->value[0] = buf;
   for (i = 1; i < rows; i++) D->value[i] = D->value[i-1] + cols;
   return D;
+}
+
+/* Row major order.  Rows are vectors that are consecutive in memory.  Matrix
+   is initialized to empty. */
+DMat svdNewDMat(int rows, int cols) {
+  double *buf = (double *) calloc(rows * cols, sizeof(double));
+  if (!buf) {return NULL;}
+
+  return svdNewDMatFromArray(rows, cols, buf);
 }
 
 void svdFreeDMat(DMat D) {
