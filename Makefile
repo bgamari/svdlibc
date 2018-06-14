@@ -1,5 +1,7 @@
 # Compilation parameters.
 CC     = gcc
+AR     = ar
+RANLIB = ranlib
 CFLAGS = -Wall -O3
 LIBS   = -lm
 
@@ -18,8 +20,8 @@ $(EXE): main.o libsvd.a
 # Create an object archive (will be statically linked).
 libsvd.a: svdlib.o svdutil.o las2.o
 	@rm -f $@
-	ar cr $@ $^
-	ranlib $@
+	$(AR) cr $@ $^
+	$(RANLIB) $@
 
 # Pattern rule to compile all the C files.
 %.o: %.c
